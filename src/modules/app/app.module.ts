@@ -5,6 +5,9 @@ import { PostModule } from "../post/post.module";
 import { ArticleModule } from "../article/article.module";
 import * as path from "path";
 import { AuthModule } from "../auth/auth.module";
+import { Post } from "../post/entities/post.entity";
+import { User } from "../auth/entities/user.entity";
+import { Article } from "../article/entities/article.entity";
 
 @Module({
   imports: [
@@ -20,9 +23,10 @@ import { AuthModule } from "../auth/auth.module";
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [],
+      entities: [Post, Article, User],
       synchronize: !!+(process.env.DATABASE_SYNCHRONIZE as string),
     }),
+
     PostModule,
     ArticleModule,
     AuthModule,
