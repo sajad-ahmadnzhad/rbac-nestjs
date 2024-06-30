@@ -18,7 +18,7 @@ import * as path from "path";
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [],
-      synchronize: !!+process.env.DATABASE_SYNCHRONIZE,
+      synchronize: !!+(process.env.DATABASE_SYNCHRONIZE as string),
     }),
   ],
   providers: [],
