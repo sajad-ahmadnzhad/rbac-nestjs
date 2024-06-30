@@ -1,7 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { PostModule } from "../post/post.module";
+import { ArticleModule } from "../article/article.module";
 import * as path from "path";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import * as path from "path";
       entities: [],
       synchronize: !!+(process.env.DATABASE_SYNCHRONIZE as string),
     }),
+    PostModule,
+    ArticleModule,
+    AuthModule,
   ],
   providers: [],
   controllers: [],
