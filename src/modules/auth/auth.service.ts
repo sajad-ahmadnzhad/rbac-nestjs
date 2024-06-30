@@ -1,11 +1,55 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ConflictException, Injectable, forwardRef } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "./entities/user.entity";
+import { Repository } from "typeorm";
+import * as bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService
+  ) {}
+
+  async signup(createUserDto: CreateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: [
+        {
+          username: createUserDto.username,
+        },
+        {
+          email: createUserDto.email,
+        },
+      ],
+    });
+
+    if (user) {
+      throw new ConflictException(
+        "User with this username or email already registered"
+      );
+    }
+
+    const hashPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashPassword,
+    });
+
+    const accessToken = this.jwtService.sign(
+      { userId: newUser.id },
+      { secret: process.env.JWT_SECRET as string }
+    );
+
+    await this.userRepository.save(newUser)
+
+    return {
+      accessToken,
+      success: "signup success",
+    };
   }
 
   findAll() {
