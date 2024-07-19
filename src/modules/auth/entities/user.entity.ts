@@ -27,4 +27,6 @@ export class User {
   @OneToMany(() => Post, (post) => post.createdBy)
   @JoinColumn()
   posts: [];
+
+  // role: 
 }
