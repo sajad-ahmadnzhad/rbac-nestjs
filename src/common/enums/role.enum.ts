@@ -1,7 +1,7 @@
-export enum Roles {
-  SuperAdmin = "SuperAdmin",
-  Admin = "Admin",
-  User = "User",
-  Moderator = "Moderator",
-  ContentCreator = "ContentCreator",
+export enum Role {
+  SUPER_ADMIN = "SuperAdmin",
+  ADMIN = "Admin",
+  USER = "User",
+  MODERATOR = "Moderator",
+  CONTENT_CREATOR = "ContentCreator",
 }

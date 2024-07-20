@@ -1,3 +1,4 @@
+import { Role } from "src/common/enums/role.enum";
 import { Post } from "../../post/entities/post.entity";
 import {
   Column,
@@ -28,5 +29,6 @@ export class User {
   @JoinColumn()
   posts: [];
 
-  // role: 
+  @Column({ type: "enum", enum: Role, default: Role.USER })
+  role: Role;
 }

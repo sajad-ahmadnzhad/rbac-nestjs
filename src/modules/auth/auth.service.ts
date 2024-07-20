@@ -6,6 +6,7 @@ import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
+import { Role } from "src/common/enums/role.enum";
 
 @Injectable()
 export class AuthService {
@@ -34,17 +35,20 @@ export class AuthService {
 
     const hashPassword = await bcrypt.hash(createUserDto.password, 10);
 
+    const isFirstUser = (await this.userRepository.count()) == 0;
+
     const newUser = this.userRepository.create({
       ...createUserDto,
       password: hashPassword,
+      role: isFirstUser ? Role.SUPER_ADMIN : Role.USER,
     });
 
     const accessToken = this.jwtService.sign(
       { userId: newUser.id },
-      { secret: process.env.JWT_SECRET as string }
+      { secret: process.env.ACCESS_TOKEN_SECRET as string }
     );
 
-    await this.userRepository.save(newUser)
+    await this.userRepository.save(newUser);
 
     return {
       accessToken,
